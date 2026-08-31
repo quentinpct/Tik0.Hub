@@ -3,14 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>To-do list Tik0.Hub</title>
+<title>To-do list — Le Bureau</title>
 <link rel="stylesheet" href="style.css">
+<script src="db.js"></script>
+<script src="auth.js"></script>
+<script>requireLogin();</script>
 </head>
 <body>
 
 <header class="topbar">
-  <h1>Tik0.Hub</h1>
+  <h1>Le Bureau</h1>
+  <div class="topbar-right">
   <a class="back show" href="index.html">← Retour au menu</a>
+  <button class="logout-btn" onclick="logout()">Déconnexion</button>
+  </div>
 </header>
 
 <section class="page active" id="page-todo">
@@ -23,11 +29,11 @@
 </section>
 
 <script>
-  // On récupère la liste sauvegardée (ou une liste vide si rien n'existe encore)
-  let todos = JSON.parse(localStorage.getItem("todos")) || [];
+  // La liste des tâches, chargée depuis Firebase au démarrage
+  let todos = [];
 
-  function save() {
-    localStorage.setItem("todos", JSON.stringify(todos));
+  async function save() {
+    await saveField("todos", todos);
   }
 
   function addTodo() {
@@ -70,8 +76,12 @@
     });
   }
 
-  // On affiche la liste dès l'ouverture de la page
-  renderTodos();
+  // Au chargement de la page : on va chercher les tâches sur Firebase, puis on les affiche
+  async function init() {
+    todos = await loadField("todos", []);
+    renderTodos();
+  }
+  init();
 </script>
 
 </body>
