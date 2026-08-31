@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To-do list Tik0.Hub</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <h1>Tik0.Hub</h1>
+  <a class="back show" href="index.html">← Retour au menu</a>
+</header>
+
+<section class="page active" id="page-todo">
+  <h2>To-do list</h2>
+  <div class="todo-add">
+    <input type="text" id="todoInput" placeholder="Ajouter une tâche...">
+    <button onclick="addTodo()">Ajouter</button>
+  </div>
+  <ul id="todoList"></ul>
+</section>
+
+<script>
+  // On récupère la liste sauvegardée (ou une liste vide si rien n'existe encore)
+  let todos = JSON.parse(localStorage.getItem("todos")) || [];
+
+  function save() {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }
+
+  function addTodo() {
+    const input = document.getElementById("todoInput");
+    const text = input.value.trim();
+    if (text === "") return;
+
+    todos.push({ text: text, done: false });
+    input.value = "";
+    save();
+    renderTodos();
+  }
+
+  function toggleTodo(index) {
+    todos[index].done = !todos[index].done;
+    save();
+    renderTodos();
+  }
+
+  function deleteTodo(index) {
+    todos.splice(index, 1);
+    save();
+    renderTodos();
+  }
+
+  function renderTodos() {
+    const list = document.getElementById("todoList");
+    list.innerHTML = "";
+
+    todos.forEach(function (todo, index) {
+      const li = document.createElement("li");
+      if (todo.done) li.classList.add("done");
+
+      li.innerHTML =
+        '<input type="checkbox" ' + (todo.done ? "checked" : "") + ' onchange="toggleTodo(' + index + ')">' +
+        "<label>" + todo.text + "</label>" +
+        '<span class="del" onclick="deleteTodo(' + index + ')">supprimer</span>';
+
+      list.appendChild(li);
+    });
+  }
+
+  // On affiche la liste dès l'ouverture de la page
+  renderTodos();
+</script>
+
+</body>
+</html>

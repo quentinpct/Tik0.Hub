@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion Tik0.Hub </title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <h1>Tik0.Hub</h1>
+</header>
+
+<section class="page active" id="page-login">
+  <div class="login-box">
+    <h2>Connexion</h2>
+    <input type="password" id="pwd" placeholder="Mot de passe" onkeydown="if(event.key==='Enter') tryLogin()">
+    <button onclick="tryLogin()">Se connecter</button>
+    <p id="error" class="login-error"></p>
+  </div>
+</section>
+
+<script src="auth.js"></script>
+<script>
+  // Si on est déjà connecté, on va directement au menu
+  if (isLoggedIn()) {
+    window.location.href = "index.html";
+  }
+
+  function tryLogin() {
+    const value = document.getElementById("pwd").value;
+
+    if (value === SITE_PASSWORD) {
+      sessionStorage.setItem("loggedIn", "true");
+      window.location.href = "index.html";
+    } else {
+      document.getElementById("error").textContent = "Mot de passe incorrect.";
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emploi du temps Entreprise Tik0.Hub</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <h1>Tik0.Hub</h1>
+  <a class="back show" href="index.html">← Retour au menu</a>
+</header>
+
+<section class="page active" id="page-entreprise">
+  <h2>Emploi du temps — Entreprise</h2>
+  <textarea id="entrepriseText" placeholder="Note ici tes horaires en entreprise..."></textarea>
+</section>
+
+<script>
+  // On récupère ce qui était sauvegardé, on l'affiche dans la zone de texte
+  const zone = document.getElementById("entrepriseText");
+  zone.value = localStorage.getItem("entrepriseText") || "";
+
+  // A chaque frappe, on sauvegarde
+  zone.addEventListener("input", function () {
+    localStorage.setItem("entrepriseText", zone.value);
+  });
+</script>
+
+</body>
+</html>

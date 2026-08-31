@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiches de révision Tik0.Hub</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <h1>Tik0.Hub</h1>
+  <a class="back show" href="index.html">← Retour au menu</a>
+</header>
+
+<section class="page active" id="page-fiches">
+  <h2>Fiches de révision</h2>
+  <div class="fiche-add">
+    <input type="text" id="ficheTitle" placeholder="Titre de la fiche...">
+    <textarea id="ficheContent" placeholder="Contenu de la fiche..."></textarea>
+    <button onclick="addFiche()">Ajouter la fiche</button>
+  </div>
+  <div id="ficheList"></div>
+</section>
+
+<script>
+  let fiches = JSON.parse(localStorage.getItem("fiches")) || [];
+
+  function save() {
+    localStorage.setItem("fiches", JSON.stringify(fiches));
+  }
+
+  function addFiche() {
+    const titleInput = document.getElementById("ficheTitle");
+    const contentInput = document.getElementById("ficheContent");
+
+    const title = titleInput.value.trim();
+    const content = contentInput.value.trim();
+    if (title === "" && content === "") return;
+
+    fiches.push({ title: title, content: content });
+
+    titleInput.value = "";
+    contentInput.value = "";
+    save();
+    renderFiches();
+  }
+
+  function deleteFiche(index) {
+    fiches.splice(index, 1);
+    save();
+    renderFiches();
+  }
+
+  function renderFiches() {
+    const list = document.getElementById("ficheList");
+    list.innerHTML = "";
+
+    fiches.forEach(function (fiche, index) {
+      const card = document.createElement("div");
+      card.className = "fiche-card";
+      card.innerHTML =
+        "<h3>" + fiche.title + "</h3>" +
+        "<p>" + fiche.content + "</p>" +
+        '<span class="del" onclick="deleteFiche(' + index + ')">supprimer</span>';
+      list.appendChild(card);
+    });
+  }
+
+  renderFiches();
+</script>
+
+</body>
+</html>
