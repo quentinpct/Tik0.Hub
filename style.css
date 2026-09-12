@@ -188,7 +188,8 @@ textarea {
 
 /* ===================== WIDGET TO-DO FLOTTANT (haut à gauche) ===================== */
 #todoWidget {
-  top: 74px;
+  position: fixed;
+  bottom: 74px;
   left: 16px;
   z-index: 50;
   width: 220px;
