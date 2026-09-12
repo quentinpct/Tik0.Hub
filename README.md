@@ -2,7 +2,7 @@
 
 Site web personnel tout-en-un : emplois du temps, messagerie, to-do list, ...
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 
 - **Emploi du temps Cours** : ouvre directement le portail ADE de l'université
 - **Emploi du temps Entreprise** : ouvre le PDF du planning
