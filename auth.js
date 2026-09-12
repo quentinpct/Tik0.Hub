@@ -1,64 +1,74 @@
+const firebaseConfig = {
+  apiKey: "AIzaSyBiGxp1o8WRkZ10pg2MmADdNpxsBhDRNVc",
+  authDomain: "tik0hub.firebaseapp.com",
+  projectId: "tik0hub",
+  appId: "1:1016413306511:web:76ecfaee66ce1e1e193afa"
+};
 
-const OWNER_HASH  = "0e3e0a2f2ba6cb042dc6dbceef6631f111ec6852328581c7ff07b664aa5579e9"; 
-const FRIEND_HASH = "368facba305ed02d2e600c46b7a74c93337de53a87e97d2d2921b4ddc99d2b0f"; 
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 
+auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
 
-async function hashText(text) {
-  const data = new TextEncoder().encode(text);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
-}
-
+const OWNER_EMAIL = "quen1quent@gmail.com";
+const FRIEND_EMAIL = "ami@tik0hub.local";
 
 async function tryLogin(password) {
-  const hash = await hashText(password);
-
-  if (hash === OWNER_HASH) {
-    sessionStorage.setItem("loggedIn", "true");
+  try {
+    await auth.signInWithEmailAndPassword(OWNER_EMAIL, password);
     sessionStorage.setItem("role", "owner");
     return "owner";
+  } catch (e) {
   }
 
-  if (hash === FRIEND_HASH) {
-    sessionStorage.setItem("loggedIn", "true");
+  try {
+    await auth.signInWithEmailAndPassword(FRIEND_EMAIL, password);
     sessionStorage.setItem("role", "friend");
     return "friend";
+  } catch (e) {
+    return null;
   }
-
-  return null;
-}
-
-
-function isLoggedIn() {
-  return sessionStorage.getItem("loggedIn") === "true";
 }
 
 function getRole() {
-  return sessionStorage.getItem("role"); // "owner", "friend", ou null
+  return sessionStorage.getItem("role"); 
 }
 
 function isOwner() {
   return getRole() === "owner";
 }
 
-
-function requireLogin() {
-  if (!isLoggedIn()) {
-    window.location.href = "login.html";
-  }
+function onAuthReady(callback) {
+  auth.onAuthStateChanged(function (user) {
+    callback(user);
+  });
 }
 
-function requireOwner() {
-  requireLogin();
-  if (!isOwner()) {
-    window.location.href = "index.html";
-  }
+function requireLogin(onReady) {
+  onAuthReady(function (user) {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+    document.body.classList.remove("hide-until-auth");
+    if (typeof onReady === "function") onReady();
+  });
 }
 
+function requireOwner(onReady) {
+  onAuthReady(function (user) {
+    if (!user || !isOwner()) {
+      window.location.href = "index.html";
+      return;
+    }
+    document.body.classList.remove("hide-until-auth");
+    if (typeof onReady === "function") onReady();
+  });
+}
 
 function logout() {
-  sessionStorage.removeItem("loggedIn");
-  sessionStorage.removeItem("role");
-  window.location.href = "login.html";
+  auth.signOut().then(function () {
+    sessionStorage.removeItem("role");
+    window.location.href = "login.html";
+  });
 }
