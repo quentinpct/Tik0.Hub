@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To-do list Tik0.Hub</title>
+<link rel="stylesheet" href="style.css">
+<script src="db.js"></script>
+<script src="auth.js"></script>
+<script>requireLogin();</script>
+</head>
+<body>
+
+<header class="topbar">
+  <h1>Tik0.Hub</h1>
+  <div class="topbar-right">
+    <a class="back show" href="index.html">← Retour au menu</a>
+    <button class="logout-btn" onclick="logout()">Déconnexion</button>
+  </div>
+</header>
+
+<section class="page active" id="page-todo">
+  <h2>To-do list</h2>
+  <div class="todo-add">
+    <input type="text" id="todoInput" placeholder="Ajouter une tâche..." onkeydown="if(event.key==='Enter') addTodo()">
+    <button onclick="addTodo()">Ajouter</button>
+  </div>
+  <ul id="todoList"></ul>
+</section>
+
+<script>
+  const FIELD_NAME = "todos_" + getRole();
+
+  let todos = [];
+
+  async function save() {
+    await saveField(FIELD_NAME, todos);
+  }
+
+  function addTodo() {
+    const input = document.getElementById("todoInput");
+    const text = input.value.trim();
+    if (text === "") return;
+
+    todos.push({ text: text, done: false });
+    input.value = "";
+    save();
+    renderTodos();
+  }
+
+  function toggleTodo(index) {
+    todos[index].done = !todos[index].done;
+    save();
+    renderTodos();
+  }
+
+  function deleteTodo(index) {
+    todos.splice(index, 1);
+    save();
+    renderTodos();
+  }
+
+  function renderTodos() {
+    const list = document.getElementById("todoList");
+    list.innerHTML = "";
+
+    if (todos.length === 0) {
+      list.innerHTML = "<p style='color:#777;'>Aucune tâche pour l'instant.</p>";
+      return;
+    }
+
+    todos.forEach(function (todo, index) {
+      const li = document.createElement("li");
+      if (todo.done) li.classList.add("done");
+
+      li.innerHTML =
+        '<input type="checkbox" ' + (todo.done ? "checked" : "") + ' onchange="toggleTodo(' + index + ')">' +
+        "<label>" + todo.text + "</label>" +
+        '<span class="del" onclick="deleteTodo(' + index + ')">supprimer</span>';
+
+      list.appendChild(li);
+    });
+  }
+
+  async function init() {
+    todos = await loadField(FIELD_NAME, []);
+    renderTodos();
+  }
+  init();
+</script>
+
+</body>
+</html>

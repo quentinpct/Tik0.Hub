@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emploi du temps Entreprise Tik0.Hub</title>
 <link rel="stylesheet" href="style.css">
-</head>
+<script src="auth.js"></script>
+<script>requireLogin();</script></head>
 <body>
 
 <header class="topbar">
@@ -19,11 +20,9 @@
 </section>
 
 <script>
-  // On récupère ce qui était sauvegardé, on l'affiche dans la zone de texte
   const zone = document.getElementById("entrepriseText");
   zone.value = localStorage.getItem("entrepriseText") || "";
 
-  // A chaque frappe, on sauvegarde
   zone.addEventListener("input", function () {
     localStorage.setItem("entrepriseText", zone.value);
   });

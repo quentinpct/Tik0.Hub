@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tik0.Hub</title>
 <link rel="stylesheet" href="style.css">
+<script src="db.js"></script>
 <script src="auth.js"></script>
 <script>requireLogin();</script>
 </head>
@@ -12,24 +13,77 @@
 
 <header class="topbar">
   <h1>Tik0.Hub</h1>
+  <div class="topbar-right">
+    <button class="logout-btn" onclick="logout()">Déconnexion</button>
+  </div>
 </header>
+
+<div id="todoWidget">
+  <h4>À faire <span class="count" id="todoWidgetCount">0</span></h4>
+  <ul id="todoWidgetList"></ul>
+</div>
 
 <section class="page active" id="page-home">
   <div class="menu-grid">
 
-    <!-- Ouvre le site ADE dans un nouvel onglet -->
     <a class="menu-btn" href="https://edtweb.univ-cotedazur.fr/direct/index.jsp?code=TBRCA2-220-VET&login=Individuel&password=UlgkTGjrh69e&showTree=false&displayConfName=VisuV&projectId=6" target="_blank">
       Emploi du temps Cours
     </a>
 
     <a class="menu-btn" href="PlanningN1.pdf">Emploi du temps Entreprise</a>
-    <!--<a class="menu-btn" href="todo.html">To-do list</a>-->
-    <a class="menu-btn" href="https://outlook.cloud.microsoft/mail/?realm=unice.fr#path=/mail" target="_blank">Messagerie</a>
-    <!--<a class="menu-btn" href="docs.html">Porte-documents</a>
-    <a class="menu-btn" href="fiches.html">Fiches de révision</a>-->
+
+    <!-- Seulement compte Owner actuellement -->
+    <div id="ownerOnlyMenu" style="display:contents;"></div>
+
+    <a class="menu-btn" href="todo.html">To do</a>
 
   </div>
 </section>
+
+<script>
+  if (isOwner()) {
+    document.getElementById("ownerOnlyMenu").innerHTML = `
+      <a class="menu-btn" href="https://outlook.cloud.microsoft/mail/?realm=unice.fr#path=/mail" target="_blank">Messagerie</a>
+    `;
+  }
+
+  const TODO_FIELD = "todos_" + getRole();
+  let widgetTodos = [];
+
+  async function toggleWidgetTodo(index) {
+    widgetTodos[index].done = !widgetTodos[index].done;
+    await saveField(TODO_FIELD, widgetTodos);
+    renderWidget();
+  }
+
+  function renderWidget() {
+    const pending = widgetTodos.filter(t => !t.done);
+    document.getElementById("todoWidgetCount").textContent = pending.length;
+
+    const list = document.getElementById("todoWidgetList");
+    list.innerHTML = "";
+
+    if (widgetTodos.length === 0) {
+      list.innerHTML = "<li class='empty'>Rien à faire 🎉</li>";
+      return;
+    }
+
+    widgetTodos.forEach(function (todo, index) {
+      const li = document.createElement("li");
+      if (todo.done) li.classList.add("done");
+      li.innerHTML =
+        '<input type="checkbox" ' + (todo.done ? "checked" : "") + ' onchange="toggleWidgetTodo(' + index + ')">' +
+        "<label>" + todo.text + "</label>";
+      list.appendChild(li);
+    });
+  }
+
+  async function initWidget() {
+    widgetTodos = await loadField(TODO_FIELD, []);
+    renderWidget();
+  }
+  initWidget();
+</script>
 
 </body>
 </html>

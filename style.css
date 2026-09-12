@@ -27,6 +27,15 @@ body {
 .topbar .back.show {
   display: inline-block;
 }
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logout-btn {
+  font-size: 12px;
+  padding: 6px 12px;
+}
 
 /* ===================== PAGES ===================== */
 .page {
@@ -78,7 +87,7 @@ button {
 button:hover {
   background: #f0f0f0;
 }
-input[type="text"], textarea {
+input[type="text"], input[type="password"], textarea {
   width: 100%;
   padding: 10px;
   font-size: 14px;
@@ -91,6 +100,22 @@ input[type="text"], textarea {
 textarea {
   min-height: 300px;
   resize: vertical;
+}
+
+/* ===================== LOGIN ===================== */
+#page-login {
+  display: flex;
+  justify-content: center;
+}
+.login-box {
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+}
+.login-error {
+  color: #B5533C;
+  font-size: 13px;
+  min-height: 18px;
 }
 
 /* ===================== TODO LIST ===================== */
@@ -155,4 +180,62 @@ textarea {
   color: #B5533C;
   font-size: 13px;
   margin-left: auto;
+}
+
+/* ===================== WIDGET TO-DO FLOTTANT (haut à gauche) ===================== */
+#todoWidget {
+  position: fixed;
+  top: 74px;
+  left: 16px;
+  z-index: 50;
+  width: 220px;
+  background: #FFFFFF;
+  border: 2px solid #222;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+#todoWidget h4 {
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin: 0 0 8px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#todoWidget h4 .count {
+  background: #222;
+  color: #fff;
+  border-radius: 10px;
+  padding: 1px 8px;
+  font-size: 11px;
+}
+#todoWidgetList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 160px;
+  overflow-y: auto;
+}
+#todoWidgetList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 4px 0;
+  border-bottom: 1px dashed #ddd;
+}
+#todoWidgetList li.done label {
+  text-decoration: line-through;
+  color: #999;
+}
+#todoWidgetList li.empty {
+  color: #999;
+  font-style: italic;
+}
+@media (max-width: 640px) {
+  #todoWidget {
+    width: 160px;
+    font-size: 12px;
+  }
 }
