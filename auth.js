@@ -11,7 +11,7 @@ const auth = firebase.auth();
 auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
 
 const OWNER_EMAIL = "quen1quent@gmail.com";
-const FRIEND_EMAIL = "ami@tik0hub.local";
+const FRIEND_EMAIL = "quentinpct@proton.me";
 
 async function tryLogin(password) {
   try {
