@@ -5,6 +5,10 @@ body {
   color: #222;
   margin: 0;
 }
+/* Cache la page le temps que Firebase confirme si on est connecté */
+body.hide-until-auth {
+  display: none;
+}
 
 /* ===================== HEADER (statique, ne bouge pas au clic) ===================== */
 .topbar {

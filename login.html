@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Connexion Tik0.Hub </title>
 <link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="auth.js"></script>
 </head>
 <body>
 
@@ -21,11 +24,13 @@
   </div>
 </section>
 
-<script src="auth.js"></script>
 <script>
+  // Cette page demande TOUJOURS le mot de passe, même si on était
+  // déjà connecté avant (pas de raccourci automatique).
+
   async function doLogin() {
     const value = document.getElementById("pwd").value;
-    const role = await tryLogin(value); 
+    const role = await tryLogin(value); // vérifié par Firebase Authentication
 
     if (role) {
       window.location.href = "index.html";

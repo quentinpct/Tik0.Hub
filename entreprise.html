@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emploi du temps Entreprise Tik0.Hub</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="auth.js"></script>
-<script>requireLogin();</script></head>
-<body>
+</head>
+<body class="hide-until-auth">
 
 <header class="topbar">
   <h1>Tik0.Hub</h1>
@@ -20,11 +22,15 @@
 </section>
 
 <script>
-  const zone = document.getElementById("entrepriseText");
-  zone.value = localStorage.getItem("entrepriseText") || "";
+  requireLogin(function () {
+    // On récupère ce qui était sauvegardé, on l'affiche dans la zone de texte
+    const zone = document.getElementById("entrepriseText");
+    zone.value = localStorage.getItem("entrepriseText") || "";
 
-  zone.addEventListener("input", function () {
-    localStorage.setItem("entrepriseText", zone.value);
+    // A chaque frappe, on sauvegarde
+    zone.addEventListener("input", function () {
+      localStorage.setItem("entrepriseText", zone.value);
+    });
   });
 </script>
 

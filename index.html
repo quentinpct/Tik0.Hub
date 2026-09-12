@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tik0.Hub</title>
 <link rel="stylesheet" href="style.css">
-<script src="db.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="auth.js"></script>
-<script>requireLogin();</script>
+<script src="db.js"></script>
 </head>
-<body>
+<body class="hide-until-auth">
 
 <header class="topbar">
   <h1>Tik0.Hub</h1>
@@ -18,6 +19,7 @@
   </div>
 </header>
 
+<!-- Petit résumé flottant des tâches en cours, en haut à gauche -->
 <div id="todoWidget">
   <h4>À faire <span class="count" id="todoWidgetCount">0</span></h4>
   <ul id="todoWidgetList"></ul>
@@ -26,27 +28,40 @@
 <section class="page active" id="page-home">
   <div class="menu-grid">
 
+    <!-- Visible pour tout le monde (owner + amis) : emplois du temps -->
     <a class="menu-btn" href="https://edtweb.univ-cotedazur.fr/direct/index.jsp?code=TBRCA2-220-VET&login=Individuel&password=UlgkTGjrh69e&showTree=false&displayConfName=VisuV&projectId=6" target="_blank">
       Emploi du temps Cours
     </a>
 
     <a class="menu-btn" href="PlanningN1.pdf">Emploi du temps Entreprise</a>
 
-    <!-- Seulement compte Owner actuellement -->
+    <!-- Cette partie n'est ajoutée dans la page que si le compte est "owner" -->
+    <!-- display:contents rend ce conteneur invisible pour la mise en page,
+         pour que le bouton à l'intérieur s'aligne comme les autres -->
     <div id="ownerOnlyMenu" style="display:contents;"></div>
 
+    <!-- Visible pour tout le monde : chacun a sa propre to-do list -->
     <a class="menu-btn" href="todo.html">To do</a>
 
   </div>
 </section>
 
 <script>
-  if (isOwner()) {
-    document.getElementById("ownerOnlyMenu").innerHTML = `
-      <a class="menu-btn" href="https://outlook.cloud.microsoft/mail/?realm=unice.fr#path=/mail" target="_blank">Messagerie</a>
-    `;
-  }
+  // On ajoute les boutons réservés au compte principal, et on charge
+  // le résumé des tâches, seulement une fois la connexion confirmée.
+  requireLogin(function () {
 
+    if (isOwner()) {
+      document.getElementById("ownerOnlyMenu").innerHTML = `
+        <a class="menu-btn" href="https://outlook.cloud.microsoft/mail/?realm=unice.fr#path=/mail" target="_blank">Messagerie</a>
+      `;
+    }
+
+    initWidget();
+  });
+
+  // Résumé des tâches en cours (propre au type de compte connecté),
+  // affiché en haut à gauche sur toutes les visites du menu.
   const TODO_FIELD = "todos_" + getRole();
   let widgetTodos = [];
 
@@ -82,7 +97,6 @@
     widgetTodos = await loadField(TODO_FIELD, []);
     renderWidget();
   }
-  initWidget();
 </script>
 
 </body>

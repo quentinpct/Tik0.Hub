@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>To-do list Tik0.Hub</title>
+<title>To-do list — Tik0.Hub</title>
 <link rel="stylesheet" href="style.css">
-<script src="db.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="auth.js"></script>
-<script>requireLogin();</script>
+<script src="db.js"></script>
 </head>
-<body>
+<body class="hide-until-auth">
 
 <header class="topbar">
   <h1>Tik0.Hub</h1>
@@ -29,8 +30,8 @@
 </section>
 
 <script>
-  const FIELD_NAME = "todos_" + getRole();
-
+  // Chaque type de compte (owner / friend) a sa propre liste, séparée des autres.
+  let FIELD_NAME;
   let todos = [];
 
   async function save() {
@@ -82,11 +83,12 @@
     });
   }
 
-  async function init() {
+  // On attend la confirmation de connexion avant de charger les tâches
+  requireLogin(async function () {
+    FIELD_NAME = "todos_" + getRole();
     todos = await loadField(FIELD_NAME, []);
     renderTodos();
-  }
-  init();
+  });
 </script>
 
 </body>
